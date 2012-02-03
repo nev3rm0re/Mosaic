@@ -11,10 +11,10 @@ bg_image = "bg/real-image.png"
 output_filename = "result.png"
 tiles_dir = "proto/uniform"
 
-tile_size = (115, 115)
+tile_size = (85, 85)
 image_limit = 430 # no limit, was: 350
 
-def get_connection():
+def get_cursor():
 	conn = MySQLdb.connect(
 		host="localhost",
 		user="sandbox", 
@@ -23,14 +23,10 @@ def get_connection():
 		cursorclass=MySQLdb.cursors.DictCursor
 	)
 	
-	return conn
+	return conn.cursor()
 
 def save_coords(id, coords):
-	conn = get_connection()
-	
-	cursor = conn.cursor()
-	
-	cursor.execute(
+	get_cursor().execute(
 		"UPDATE fitmeimages SET x = %d, y = %d WHERE id = %d" % (coords + (id, )))
 	
 
@@ -39,10 +35,8 @@ def get_tiles():
 	Fetches uploaded images from the database and returns an 
 	array of dicts: {id:, filename:, shade:, x:, y: }
 	"""
-	
-	conn = get_connection()
-	
-	cursor = conn.cursor()
+		
+	cursor = get_cursor()
 	
 	cursor.execute("SELECT * FROM fitmeimages ORDER BY shade ASC, id ASC")
 	return cursor.fetchall();
