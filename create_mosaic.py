@@ -49,17 +49,9 @@ def cell_is_usable(cell):
 	maxcolors = tile_size[0] * tile_size[1]
 	colors = cell.getcolors(maxcolors)
 	
-	avg_r = 0
-	avg_g = 0
-	avg_b = 0
-	
 	is_usable = False
 	
 	for color in colors:	
-		avg_r += color[1][0] * color[0]
-		avg_g += color[1][1] * color[0]
-		avg_b += color[1][2] * color[0]
-		
 		if color[1][3] == 255 and color[0] >= 0:
 			is_usable = True
 			break
