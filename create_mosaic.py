@@ -3,16 +3,24 @@ import sys
 import random
 import os
 
+import argparse
+
 import MySQLdb, MySQLdb.cursors
 from PIL import Image
 
-mask_image = "bg/mask.png"
-bg_image = "bg/real-image.png"
+mask_image = "bg/fit-me-mask.png"
+bg_image = "bg/fit-me.png"
 output_filename = "result.png"
 tiles_dir = "proto/uniform"
 
-tile_size = (85, 85)
-image_limit = 430 # no limit, was: 350
+tile_size = (300, 300)
+image_limit = 100 # no limit, was: 350
+
+def parse_args():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--tile', type=int, help='tile size in pixels',default=150)
+	
+	return parser.parse_args()
 
 def get_cursor():
 	conn = MySQLdb.connect(
@@ -52,13 +60,22 @@ def cell_is_usable(cell):
 	is_usable = False
 	
 	for color in colors:	
-		if color[1][3] == 255 and color[0] >= 0:
-			is_usable = True
-			break
-			
+		if len(color[1]) == 3:
+			if sum(color[1]) == 765 and color[0] < maxcolors/2:
+				# less than a half are white
+				is_usable = True
+		else:
+			if color[1][3] == 255 and color[0] >= 0:
+				is_usable = True
+				break	
 	return is_usable
 
 def main():
+	args = parse_args()
+	
+	if args.tile:
+		tile_size = (args.tile, args.tile)
+	
 	image = Image.open(mask_image)
 	
 	width = image.size[0] / tile_size[0]
