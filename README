@@ -1,0 +1,11 @@
+create_mosaic.py
+
+Accepts `--tile` argument, uploaded image will be scaled to it before insert to mosaic
+
+analyze.py
+
+Calculates how many images will fit on a current image.
+
+If run without options will analyze tile sizes from 25x25 to 100x100.
+
+Accepts `--tile-size` option.
